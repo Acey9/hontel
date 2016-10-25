@@ -25,9 +25,9 @@ sys.dont_write_bytecode = True
 from thirdparty.telnetsrv.threaded import TelnetHandler, command
 
 AUTH_USERNAME = "root"
-AUTH_PASSWORD = "123456"
-MAX_AUTH_ATTEMPTS = 3
-TELNET_ISSUE = "\nTELNET session now in ESTABLISHED state\n"
+AUTH_PASSWORD = "xc3511"
+MAX_AUTH_ATTEMPTS = 50
+TELNET_ISSUE = "\nBusyBox v1.12.1 (2013-10-15 04:06:55 CST) built-in shell (ash)\nEnter 'help' for a list of built-in commands.\n"
 WELCOME = None
 LOG_PATH = "/var/log/%s.log" % os.path.split(__file__)[-1].split('.')[0]
 SAMPLES_DIR = "/var/log/%s/" % os.path.split(__file__)[-1].split('.')[0]
@@ -42,8 +42,8 @@ LISTEN_ADDRESS = "0.0.0.0"
 LISTEN_PORT = 23
 HOSTNAME = socket.gethostname()
 REPLACEMENTS = {}
-BUSYBOX_FAKE_BANNER = "BusyBox v1.18.4 (2012-04-17 18:58:31 CST)"
-FAKE_HOSTNAME = "prodigy"
+BUSYBOX_FAKE_BANNER = "BusyBox v1.12.1 (2013-10-15 04:06:55 CST) multi-call binary"
+FAKE_HOSTNAME = "ralink"
 FAKE_ARCHITECTURE = "MIPS"
 
 class HoneyTelnetHandler(TelnetHandler):
