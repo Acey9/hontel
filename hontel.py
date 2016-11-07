@@ -24,8 +24,31 @@ sys.dont_write_bytecode = True
 
 from thirdparty.telnetsrv.threaded import TelnetHandler, command
 
-AUTH_USERNAME = "root"
-AUTH_PASSWORD = ["xc3511","root","klv1234", "Zte521", "hi3518", "7ujMko0vizxv", "7ujMko0admin","vizxv","888888","666666","dreambox","juantech","xmhdipc"]
+AUTH_USERNAME = {
+    'administrator': 1, 
+    'supervisor': 1, 
+    'guest': 1, 
+    'service': 1, 
+    'admin': 1, 
+    'support': 1, 
+    'Administrator': 1, 
+    'admin1': 1, 
+    'tech': 1, 
+    'user': 1, 
+    '888888': 1, 
+    'mother': 1, 
+    '666666': 1, 
+    'ubnt': 1, 
+    'root': 1}
+
+AUTH_PASSWORD = {
+    'supervisor': 1, 'meinsm': 1, '00000000': 1, 'zlxx.': 1, 'pass': 1, 'root': 1, 'juantech': 1, '123456': 1, 
+    'jvbzd': 1, 'klv1234': 1, 'xc3511': 1, 'guest': 1, 'service': 1, 'support': 1, 'dreambox': 1, 'system': 1, 
+    '1111': 1, 'vizxv': 1, '(none)': 1, '888888': 1, 'smcadmin': 1, 'admin1234': 1, 'ubnt': 1, 'xmhdipc': 1, 
+    'tech': 1, '1234': 1, 'klv123': 1, 'realtek': 1, 'fucker': 1, 'anko': 1, '1111111': 1, 'user': 1, '54321': 1, 
+    '666666': 1, 'password': 1, '7ujMko0vizxv': 1, 'Zte521': 1, 'default': 1, '12345': 1, 'admin': 1, 'ikwb': 1, 
+    'hi3518': 1, '7ujMko0admin': 1
+}
 MAX_AUTH_ATTEMPTS = 50
 TELNET_ISSUE = "\nBusyBox v1.12.1 (2013-10-15 04:06:55 CST) built-in shell (ash)\nEnter 'help' for a list of built-in commands.\n"
 WELCOME = None
@@ -202,7 +225,7 @@ class HoneyTelnetHandler(TelnetHandler):
         if username is not None and password is not None:
             self._log("AUTH", "%s:%s" % (username, password))
 
-        if not(username == AUTH_USERNAME and password in AUTH_PASSWORD):
+        if not(AUTH_USERNAME.get(username) and  AUTH_PASSWORD.get(password)):
             raise Exception("[x] wrong credentials ('%s':'%s')" % (username, password))
 
 class TelnetServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
