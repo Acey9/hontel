@@ -25,7 +25,7 @@ sys.dont_write_bytecode = True
 from thirdparty.telnetsrv.threaded import TelnetHandler, command
 
 AUTH_USERNAME = "root"
-AUTH_PASSWORD = "xc3511"
+AUTH_PASSWORD = ["xc3511","root","klv1234", "Zte521", "hi3518", "7ujMko0vizxv", "7ujMko0admin","vizxv","888888","666666","dreambox","juantech","xmhdipc"]
 MAX_AUTH_ATTEMPTS = 50
 TELNET_ISSUE = "\nBusyBox v1.12.1 (2013-10-15 04:06:55 CST) built-in shell (ash)\nEnter 'help' for a list of built-in commands.\n"
 WELCOME = None
@@ -200,7 +200,7 @@ class HoneyTelnetHandler(TelnetHandler):
         if username is not None and password is not None:
             self._log("AUTH", "%s:%s" % (username, password))
 
-        if not(username == AUTH_USERNAME and password == AUTH_PASSWORD):
+        if not(username == AUTH_USERNAME and password in AUTH_PASSWORD):
             raise Exception("[x] wrong credentials ('%s':'%s')" % (username, password))
 
 class TelnetServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
