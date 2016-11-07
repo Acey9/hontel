@@ -45,6 +45,7 @@ REPLACEMENTS = {}
 BUSYBOX_FAKE_BANNER = "BusyBox v1.12.1 (2013-10-15 04:06:55 CST) multi-call binary"
 FAKE_HOSTNAME = "ralink"
 FAKE_ARCHITECTURE = "MIPS"
+SESSION_TIMEOUT = 60
 
 class HoneyTelnetHandler(TelnetHandler):
     WELCOME = WELCOME
@@ -113,6 +114,7 @@ class HoneyTelnetHandler(TelnetHandler):
 
     def session_start(self):
         self._log("SESSION_START")
+        self.start_ts = int(time.time())
         self.process = subprocess.Popen(SHELL, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, preexec_fn=os.setsid)
 
         flags = fcntl.fcntl(self.process.stdout, fcntl.F_GETFL)
@@ -121,6 +123,22 @@ class HoneyTelnetHandler(TelnetHandler):
     def session_end(self):
         self._log("SESSION_END")
 
+    def session_timeout(self):
+        self.finish()
+        self._log("SESSION_TIMEOUT")
+        
+    def session_detect(self):
+        def detect():
+            while 1:
+                cts = int(time.time())
+                if cts - self.start_ts > SESSION_TIMEOUT:
+                    self.session_timeout()
+                    break
+                else:
+                    time.sleep(.5)
+        t = threading.Thread(target=detect,)
+        t.start()
+        
     def handle(self):
         if TELNET_ISSUE:
             self.writeline(TELNET_ISSUE)
@@ -137,8 +155,11 @@ class HoneyTelnetHandler(TelnetHandler):
             self.writeline(self.WELCOME)
 
         self.session_start()
-
+        
+        self.session_detect()
+        
         while self.RUNSHELL and self.process.poll() is None:
+            self.start_ts = int(time.time())
             line = self.input_reader(self, self.readline(prompt=self.PROMPT).strip())
             raw = line.raw
             cmd = line.cmd
