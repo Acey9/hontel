@@ -140,11 +140,15 @@ class HoneyTelnetHandler(TelnetHandler):
         t.start()
         
     def handle(self):
+        self.start_ts = int(time.time())
+        self.session_detect()
+        
         if TELNET_ISSUE:
             self.writeline(TELNET_ISSUE)
 
         authenticated = False
         for attempt in xrange(MAX_AUTH_ATTEMPTS):
+            self.start_ts = int(time.time())
             authenticated = self.authentication_ok()
             if authenticated:
                 break
@@ -155,8 +159,6 @@ class HoneyTelnetHandler(TelnetHandler):
             self.writeline(self.WELCOME)
 
         self.session_start()
-        
-        self.session_detect()
         
         while self.RUNSHELL and self.process.poll() is None:
             self.start_ts = int(time.time())
