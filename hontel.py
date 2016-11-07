@@ -151,8 +151,8 @@ class HoneyTelnetHandler(TelnetHandler):
             os.killpg(self.process.pid, signal.SIGINT)
         except:
             pass
-        self.finish()
         self._log("SESSION_TIMEOUT")
+        self.finish()
         
     def session_detect(self):
         def detect():
