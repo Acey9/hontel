@@ -68,7 +68,7 @@ REPLACEMENTS = {}
 BUSYBOX_FAKE_BANNER = "BusyBox v1.12.1 (2013-10-15 04:06:55 CST) multi-call binary"
 FAKE_HOSTNAME = "ralink"
 FAKE_ARCHITECTURE = "MIPS"
-SESSION_TIMEOUT = 120
+SESSION_TIMEOUT = 60
 
 class HoneyTelnetHandler(TelnetHandler):
     WELCOME = WELCOME
