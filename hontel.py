@@ -299,7 +299,9 @@ def main():
 
     REPLACEMENTS[HOSTNAME] = FAKE_HOSTNAME
     REPLACEMENTS["Ubuntu"] = "Debian"
-
+    
+    signal.signal(signal.SIGCHLD, signal.SIG_IGN)
+    
     for arch in ("i386", "i686", "x86_64 x86_64 x86_64", "x86_64 x86_64", "x86_64", "amd64"):
         REPLACEMENTS[arch] = FAKE_ARCHITECTURE
 
