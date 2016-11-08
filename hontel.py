@@ -24,31 +24,82 @@ sys.dont_write_bytecode = True
 
 from thirdparty.telnetsrv.threaded import TelnetHandler, command
 
-AUTH_USERNAME = {
-    'administrator': 1, 
-    'supervisor': 1, 
-    'guest': 1, 
-    'service': 1, 
-    'admin': 1, 
-    'support': 1, 
-    'Administrator': 1, 
-    'admin1': 1, 
-    'tech': 1, 
-    'user': 1, 
-    '888888': 1, 
-    'mother': 1, 
-    '666666': 1, 
-    'ubnt': 1, 
-    'root': 1}
+ups = [
+    ("666666","666666"),
+    ("888888","888888"),
+    ("admin","1111"),
+    ("admin","1111111"),
+    ("admin","1234"),
+    ("admin","12345"),
+    ("admin","123456"),
+    ("admin1","password"),
+    ("admin","4321"),
+    ("admin","54321"),
+    ("admin","7ujMko0admin"),
+    ("admin","admin"),
+    ("admin","admin1234"),
+    ("administrator","1234"),
+    ("Administrator","admin"),
+    ("Administrator","meinsm"),
+    ("admin","meinsm"),
+    ("admin","(none)"),
+    ("admin","pass"),
+    ("admin","password"),
+    ("admin","smcadmin"),
+    ("guest","12345"),
+    ("guest","guest"),
+    ("mother","fucker"),
+    ("root","00000000"),
+    ("root","1111"),
+    ("root","1234"),
+    ("root","12345"),
+    ("root","123456"),
+    ("root","54321"),
+    ("root","5up"),
+    ("root","666666"),
+    ("root","7ujMko0admin"),
+    ("root","7ujMko0vizxv"),
+    ("root","888888"),
+    ("root","admin"),
+    ("root","anko"),
+    ("root","default"),
+    ("root","dreambox"),
+    ("root","GM8182"),
+    ("root","hi3518"),
+    ("root","ikwb"),
+    ("root","juantech"),
+    ("root","jvbzd"),
+    ("root","klv123"),
+    ("root","klv1234"),
+    ("root","(none)"),
+    ("root","pass"),
+    ("root","password"),
+    ("root","realtek"),
+    ("root","root"),
+    ("root","system"),
+    ("root","user"),
+    ("root","vizxv"),
+    ("root","xc3511"),
+    ("root","xmhdipc"),
+    ("root","zlxx."),
+    ("root","Zte521"),
+    ("service","service"),
+    ("shell","enable"),
+    ("supervisor","supervisor"),
+    ("support","support"),
+    ("tech","tech"),
+    ("ubnt","ubnt"),
+    ("user","user"),
+]
 
-AUTH_PASSWORD = {
-    'supervisor': 1, 'meinsm': 1, '00000000': 1, 'zlxx.': 1, 'pass': 1, 'root': 1, 'juantech': 1, '123456': 1, 
-    'jvbzd': 1, 'klv1234': 1, 'xc3511': 1, 'guest': 1, 'service': 1, 'support': 1, 'dreambox': 1, 'system': 1, 
-    '1111': 1, 'vizxv': 1, '(none)': 1, '888888': 1, 'smcadmin': 1, 'admin1234': 1, 'ubnt': 1, 'xmhdipc': 1, 
-    'tech': 1, '1234': 1, 'klv123': 1, 'realtek': 1, 'fucker': 1, 'anko': 1, '1111111': 1, 'user': 1, '54321': 1, 
-    '666666': 1, 'password': 1, '7ujMko0vizxv': 1, 'Zte521': 1, 'default': 1, '12345': 1, 'admin': 1, 'ikwb': 1, 
-    'hi3518': 1, '7ujMko0admin': 1
-}
+USER_PASSWORD = {}
+for u, p in ups:
+    try:
+        USER_PASSWORD.setdefault(u, {})
+        USER_PASSWORD[u][p] = 1
+    except:
+        pass
+    
 MAX_AUTH_ATTEMPTS = 50
 TELNET_ISSUE = "\nBusyBox v1.12.1 (2013-10-15 04:06:55 CST) built-in shell (ash)\nEnter 'help' for a list of built-in commands.\n"
 WELCOME = None
@@ -77,8 +128,8 @@ class HoneyTelnetHandler(TelnetHandler):
     PROMPT_USER = "%s login: " % HOSTNAME
     PROMPT_PASS = "Password: "
 
-    authNeedUser = AUTH_USERNAME is not None
-    authNeedPass = AUTH_PASSWORD is not None
+    authNeedUser = USER_PASSWORD is not None
+    authNeedPass = USER_PASSWORD is not None
     process = None
 
     def write(self, text):
@@ -235,8 +286,9 @@ class HoneyTelnetHandler(TelnetHandler):
     def authCallback(self, username, password):
         if username is not None and password is not None:
             self._log("AUTH", "%s:%s" % (username, password))
-
-        if not(AUTH_USERNAME.get(username) and  AUTH_PASSWORD.get(password)):
+            
+        upwd = USER_PASSWORD.get(username, {})
+        if not(upwd and upwd.get(password)):
             raise Exception("[x] wrong credentials ('%s':'%s')" % (username, password))
 
 class TelnetServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
