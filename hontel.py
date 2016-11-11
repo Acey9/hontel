@@ -233,7 +233,6 @@ class HoneyTelnetHandler(TelnetHandler):
         t.start()
         
     def handle(self):
-        self._log("handle, 1")
         self.start_ts = int(time.time())
         self.session_detect()
         
@@ -247,7 +246,6 @@ class HoneyTelnetHandler(TelnetHandler):
             if authenticated:
                 break
         if not authenticated:
-            self._log('not authenticated.')
             return
 
         if self.DOECHO and self.WELCOME:
