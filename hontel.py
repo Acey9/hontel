@@ -106,8 +106,8 @@ for u, p in ups:
         pass
     
 MAX_AUTH_ATTEMPTS = 50
-TELNET_ISSUE = "\nBusyBox v1.12.1 (2013-10-15 04:06:55 CST) built-in shell (ash)\nEnter 'help' for a list of built-in commands.\n"
-WELCOME = None
+TELNET_ISSUE = ""
+WELCOME = "\nBusyBox v1.12.1 (2013-10-15 04:06:55 CST) built-in shell (ash)\nEnter 'help' for a list of built-in commands.\n"
 LOG_PATH = "/var/log/%s.log" % os.path.split(__file__)[-1].split('.')[0]
 SAMPLES_DIR = "/var/log/%s/" % os.path.split(__file__)[-1].split('.')[0]
 READ_SIZE = 1024
