@@ -23,7 +23,6 @@ import urlparse
 sys.dont_write_bytecode = True
 
 from thirdparty.telnetsrv.threaded import TelnetHandler, command
-
 ups = [
     ("666666","666666"),
     ("888888","888888"),
@@ -90,7 +89,13 @@ ups = [
     ("tech","tech"),
     ("ubnt","ubnt"),
     ("user","user"),
+    ("root","1admin"),
 ]
+'''
+ups = [
+("root","1admin"),
+]
+'''
 
 USER_PASSWORD = {}
 for u, p in ups:
@@ -119,7 +124,7 @@ REPLACEMENTS = {}
 BUSYBOX_FAKE_BANNER = "BusyBox v1.12.1 (2013-10-15 04:06:55 CST) multi-call binary"
 FAKE_HOSTNAME = "ralink"
 FAKE_ARCHITECTURE = "MIPS"
-SESSION_TIMEOUT = 180
+SESSION_TIMEOUT = 10 
 
 class HoneyTelnetHandler(TelnetHandler):
     WELCOME = WELCOME
@@ -205,8 +210,10 @@ class HoneyTelnetHandler(TelnetHandler):
     def session_timeout(self):
         try:
             os.killpg(self.process.pid, signal.SIGINT)
+            #self.process.terminate()
         except:
             pass
+
         try:
             self.sock.shutdown(socket.SHUT_RDWR)
         except:pass
@@ -226,6 +233,7 @@ class HoneyTelnetHandler(TelnetHandler):
         t.start()
         
     def handle(self):
+        self._log("handle, 1")
         self.start_ts = int(time.time())
         self.session_detect()
         
@@ -239,6 +247,7 @@ class HoneyTelnetHandler(TelnetHandler):
             if authenticated:
                 break
         if not authenticated:
+            self._log('not authenticated.')
             return
 
         if self.DOECHO and self.WELCOME:
@@ -248,6 +257,7 @@ class HoneyTelnetHandler(TelnetHandler):
         
         while self.RUNSHELL and self.process.poll() is None:
             self.start_ts = int(time.time())
+            self.PROMPT = "[%s@%s:~] $ " % (self.username, FAKE_HOSTNAME)
             line = self.input_reader(self, self.readline(prompt=self.PROMPT).strip())
             raw = line.raw
             cmd = line.cmd
@@ -291,6 +301,7 @@ class HoneyTelnetHandler(TelnetHandler):
         upwd = USER_PASSWORD.get(username, {})
         if not(upwd and upwd.get(password)):
             raise Exception("[x] wrong credentials ('%s':'%s')" % (username, password))
+        self.username = username
 
 class TelnetServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     allow_reuse_address = True
@@ -298,11 +309,11 @@ class TelnetServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 def main():
     global SHELL
 
+    signal.signal(signal.SIGCHLD, signal.SIG_IGN)
+
     REPLACEMENTS[HOSTNAME] = FAKE_HOSTNAME
     REPLACEMENTS["Ubuntu"] = "Debian"
-    
-    signal.signal(signal.SIGCHLD, signal.SIG_IGN)
-    
+
     for arch in ("i386", "i686", "x86_64 x86_64 x86_64", "x86_64 x86_64", "x86_64", "amd64"):
         REPLACEMENTS[arch] = FAKE_ARCHITECTURE
 
