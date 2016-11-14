@@ -204,14 +204,13 @@ class HoneyTelnetHandler(TelnetHandler):
             os.close(THREAD_DATA.logHandle)
         except:
             pass
-
-    def session_timeout(self, timeout):
         try:
             os.killpg(self.process.pid, signal.SIGINT)
             #self.process.terminate()
         except:
             pass
 
+    def session_timeout(self, timeout):
         try:
             self.sock.shutdown(socket.SHUT_RDWR)
         except:pass
