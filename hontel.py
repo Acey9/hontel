@@ -132,6 +132,8 @@ class HoneyTelnetHandler(TelnetHandler):
     authNeedUser = USER_PASSWORD is not None
     authNeedPass = USER_PASSWORD is not None
     process = None
+    update_ts = 0
+    start_ts = 0
 
     def write(self, text):
         for key, value in REPLACEMENTS.items():
@@ -232,6 +234,7 @@ class HoneyTelnetHandler(TelnetHandler):
         t.start()
         
     def handle(self):
+        self.update_ts = int(time.time())
         self.start_ts = int(time.time())
         self.session_detect()
         
