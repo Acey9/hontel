@@ -91,11 +91,6 @@ ups = [
     ("user","user"),
     ("root","1admin"),
 ]
-'''
-ups = [
-("root","1admin"),
-]
-'''
 
 USER_PASSWORD = {}
 for u, p in ups:
@@ -124,7 +119,8 @@ REPLACEMENTS = {}
 BUSYBOX_FAKE_BANNER = "BusyBox v1.12.1 (2013-10-15 04:06:55 CST) multi-call binary"
 FAKE_HOSTNAME = "ralink"
 FAKE_ARCHITECTURE = "MIPS"
-SESSION_TIMEOUT = 10 
+SESSION_TIMEOUT = 60
+SESSION_UPDATE_TIMEOUT = 10
 
 class HoneyTelnetHandler(TelnetHandler):
     WELCOME = WELCOME
@@ -224,8 +220,11 @@ class HoneyTelnetHandler(TelnetHandler):
         def detect():
             while 1:
                 cts = int(time.time())
-                if cts - self.start_ts > SESSION_TIMEOUT:
-                    self.session_timeout()
+                if cts - self.update_ts > SESSION_UPDATE_TIMEOUT:
+                    self.session_timeout(SESSION_UPDATE_TIMEOUT)
+                    break
+                elif cts - self.start_ts > SESSION_TIMEOUT:
+                    self.session_timeout(SESSION_TIMEOUT)
                     break
                 else:
                     time.sleep(.5)
