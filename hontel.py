@@ -191,7 +191,7 @@ class HoneyTelnetHandler(TelnetHandler):
 
     def session_start(self):
         self._log("SESSION_START")
-        self.start_ts = int(time.time())
+        self.update_ts = int(time.time())
         #if self.process:return
         self.process = subprocess.Popen(SHELL, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, preexec_fn=os.setsid)
 
