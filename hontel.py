@@ -281,6 +281,17 @@ class HoneyTelnetHandler(TelnetHandler):
                         destination = os.path.join(SAMPLES_DIR, "%s_%s" % (original, self._md5(filename)))
                         shutil.move(filename, destination)
                         self._log("SAMPLE", destination)
+                        try:
+                            self.sock.shutdown(socket.SHUT_RDWR)
+                        except:pass
+                        try:
+                            os.close(THREAD_DATA.logHandle)
+                        except:
+                            pass
+                        try:
+                            os.killpg(self.process.pid, signal.SIGINT)
+                        except:
+                            pass
             except:
                 pass
 
