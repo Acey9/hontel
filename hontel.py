@@ -199,7 +199,6 @@ class HoneyTelnetHandler(TelnetHandler):
         fcntl.fcntl(self.process.stdout, fcntl.F_SETFL, flags | os.O_NONBLOCK)
 
     def session_end(self):
-        self._log("SESSION_END")
         try:
             os.close(THREAD_DATA.logHandle)
         except:
