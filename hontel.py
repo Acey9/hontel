@@ -90,6 +90,11 @@ ups = [
     ("ubnt","ubnt"),
     ("user","user"),
     ("root","1admin"),
+    ("root","2admin"),
+    ("root","3admin"),
+    ("root","4admin"),
+    ("root","5admin"),
+    ("root","6admin"),
 ]
 
 USER_PASSWORD = {}
@@ -100,7 +105,7 @@ for u, p in ups:
     except:
         pass
     
-MAX_AUTH_ATTEMPTS = 50
+MAX_AUTH_ATTEMPTS = 10
 TELNET_ISSUE = ""
 WELCOME = "\nBusyBox v1.12.1 (2013-10-15 04:06:55 CST) built-in shell (ash)\nEnter 'help' for a list of built-in commands.\n"
 LOG_PATH = "/var/log/%s.log" % os.path.split(__file__)[-1].split('.')[0]
@@ -119,7 +124,7 @@ REPLACEMENTS = {}
 BUSYBOX_FAKE_BANNER = "BusyBox v1.12.1 (2013-10-15 04:06:55 CST) multi-call binary"
 FAKE_HOSTNAME = "ralink"
 FAKE_ARCHITECTURE = "MIPS"
-SESSION_TIMEOUT = 60
+SESSION_TIMEOUT = 120
 SESSION_UPDATE_TIMEOUT = 10
 
 class HoneyTelnetHandler(TelnetHandler):
@@ -199,6 +204,7 @@ class HoneyTelnetHandler(TelnetHandler):
         fcntl.fcntl(self.process.stdout, fcntl.F_SETFL, flags | os.O_NONBLOCK)
 
     def session_end(self):
+        #self._log("SESSION_END")
         try:
             os.close(THREAD_DATA.logHandle)
         except:
@@ -208,6 +214,7 @@ class HoneyTelnetHandler(TelnetHandler):
             #self.process.terminate()
         except:
             pass
+
 
     def session_timeout(self, timeout):
         try:
@@ -280,17 +287,7 @@ class HoneyTelnetHandler(TelnetHandler):
                         destination = os.path.join(SAMPLES_DIR, "%s_%s" % (original, self._md5(filename)))
                         shutil.move(filename, destination)
                         self._log("SAMPLE", destination)
-                        try:
-                            self.sock.shutdown(socket.SHUT_RDWR)
-                        except:pass
-                        try:
-                            os.close(THREAD_DATA.logHandle)
-                        except:
-                            pass
-                        try:
-                            os.killpg(self.process.pid, signal.SIGINT)
-                        except:
-                            pass
+                        self.session_timeout(10000)
             except:
                 pass
 
