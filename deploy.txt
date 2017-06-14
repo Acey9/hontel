@@ -43,4 +43,8 @@ rm -rf telnetsrvlib-master
 wget https://github.com/Acey9/hontel/blob/master/hontel.py
 mv hontel.py /bin/hontel.py
 chmod +x /bin/hontel.py
+wget https://raw.githubusercontent.com/Acey9/hontel/master/proc/cpuinfo -O /proc/cpuinfo
+wget https://raw.githubusercontent.com/Acey9/hontel/master/proc/meminfo -O /proc/meminfo
+wget https://raw.githubusercontent.com/Acey9/hontel/master/proc/modules -O /proc/modules
+wget https://raw.githubusercontent.com/Acey9/hontel/master/proc/mounts -O /proc/mounts
 exit
