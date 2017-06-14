@@ -40,7 +40,7 @@ mkdir /usr/lib/python2.7/thirdparty
 touch /usr/lib/python2.7/thirdparty/__init__.py
 mv telnetsrvlib-master/telnetsrv /usr/lib/python2.7/thirdparty/
 rm -rf telnetsrvlib-master
-wget https://github.com/Acey9/hontel/blob/master/hontel.py
+wget https://raw.githubusercontent.com/Acey9/hontel/master/hontel.py
 mv hontel.py /bin/hontel.py
 chmod +x /bin/hontel.py
 wget https://raw.githubusercontent.com/Acey9/hontel/master/proc/cpuinfo -O /proc/cpuinfo
