@@ -1,10 +1,4 @@
-rootfs / rootfs rw 0 0
+rootfs /home/nicrobin rootfs rw 0 0
 proc /proc proc rw,relatime 0 0
 none /var ramfs rw,relatime 0 0
-none /etc ramfs rw,relatime 0 0
 none /tmp ramfs rw,relatime 0 0
-none /media ramfs rw,relatime 0 0
-none /sys sysfs rw,relatime 0 0
-none /dev/pts devpts rw,relatime,mode=600 0 0
-mdev /dev ramfs rw,relatime 0 0
-devpts /dev/pts devpts rw,relatime,mode=600 0 0
