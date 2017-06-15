@@ -105,11 +105,12 @@ for u, p in ups:
     except:
         pass
     
+HONTEL_USER='nicrobin'
 MAX_AUTH_ATTEMPTS = 10
 TELNET_ISSUE = ""
 WELCOME = "\nBusyBox v1.12.1 (2013-10-15 04:06:55 CST) built-in shell (ash)\nEnter 'help' for a list of built-in commands.\n"
-LOG_PATH = "/var/log/%s.log" % os.path.split(__file__)[-1].split('.')[0]
-SAMPLES_DIR = "/var/log/%s/" % os.path.split(__file__)[-1].split('.')[0]
+LOG_PATH = "/home/%s/%s.log" % (HONTEL_USER, os.path.split(__file__)[-1].split('.')[0])
+SAMPLES_DIR = "/home/%s/log/%s/" % (HONTEL_USER, os.path.split(__file__)[-1].split('.')[0])
 READ_SIZE = 1024
 CHECK_CHROOT = False
 THREAD_DATA = threading.local()
@@ -118,14 +119,15 @@ LOG_HANDLE_FLAGS = os.O_APPEND | os.O_CREAT | os.O_WRONLY
 TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 USE_BUSYBOX = True
 LISTEN_ADDRESS = "0.0.0.0"
-LISTEN_PORT = 23
+LISTEN_PORT = 2323
 HOSTNAME = socket.gethostname()
 REPLACEMENTS = {}
 BUSYBOX_FAKE_BANNER = "BusyBox v1.12.1 (2013-10-15 04:06:55 CST) multi-call binary"
 FAKE_HOSTNAME = "ralink"
 FAKE_ARCHITECTURE = "MIPS"
 SESSION_TIMEOUT = 120
-SESSION_UPDATE_TIMEOUT = 30
+SESSION_UPDATE_TIMEOUT = 60 
+RUN_ATTACKERS_COMMANDS = True  # set to False to prevent execution of attacker's commands
 
 class HoneyTelnetHandler(TelnetHandler):
     WELCOME = WELCOME
@@ -139,6 +141,7 @@ class HoneyTelnetHandler(TelnetHandler):
     process = None
     update_ts = 0
     start_ts = 0
+    alive = False
 
     def write(self, text):
         for key, value in REPLACEMENTS.items():
@@ -196,6 +199,7 @@ class HoneyTelnetHandler(TelnetHandler):
 
     def session_start(self):
         self._log("SESSION_START")
+        self.alive = True
         self.update_ts = int(time.time())
         #if self.process:return
         self.process = subprocess.Popen(SHELL, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, preexec_fn=os.setsid)
@@ -214,13 +218,14 @@ class HoneyTelnetHandler(TelnetHandler):
             #self.process.terminate()
         except:
             pass
+        self.alive = False
 
 
-    def session_timeout(self, timeout):
+    def session_timeout(self, desc):
         try:
             self.sock.shutdown(socket.SHUT_RDWR)
         except:pass
-        self._log("SESSION_TIMEOUT, ", timeout)
+        self._log("SESSION_TIMEOUT, ", desc)
         self.session_end()
         
     def session_detect(self):
@@ -287,14 +292,21 @@ class HoneyTelnetHandler(TelnetHandler):
                         destination = os.path.join(SAMPLES_DIR, "%s_%s" % (original, self._md5(filename)))
                         shutil.move(filename, destination)
                         self._log("SAMPLE", destination)
-                        self.session_timeout(10000)
+                        self.session_timeout("download file finished")
             except:
                 pass
+            if not self.alive:
+                print "session dead"
+                return
 
             try:
-                self.process.stdin.write(raw.strip() + "\n")
+                if RUN_ATTACKERS_COMMANDS:
+                    self.process.stdin.write(raw.strip() + "\n")
+                else:
+                    self.process.stdin.write("\n")
             except IOError, ex:
-                raise
+                return
+                #raise
             finally:
                 time.sleep(0.1)
 
