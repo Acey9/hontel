@@ -47,4 +47,13 @@ wget https://raw.githubusercontent.com/Acey9/hontel/master/proc/cpuinfo -O /proc
 wget https://raw.githubusercontent.com/Acey9/hontel/master/proc/meminfo -O /proc/meminfo
 wget https://raw.githubusercontent.com/Acey9/hontel/master/proc/modules -O /proc/modules
 wget https://raw.githubusercontent.com/Acey9/hontel/master/proc/mounts -O /proc/mounts
+
+useradd nicrobin -m
+hname=`cat /etc/hostname`
+echo "127.0.0.1    $hname" >> /etc/hosts
+mkdir -p /home/nicrobin/log/hontel/
+chown nicrobin:nicrobin /home/nicrobin -R
+cd /home/nicrobin
+sudo -u nicrobin hontel.py
+
 exit
