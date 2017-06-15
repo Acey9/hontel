@@ -53,6 +53,9 @@ hname=`cat /etc/hostname`
 echo "127.0.0.1    $hname" >> /etc/hosts
 mkdir -p /home/nicrobin/log/hontel/
 chown nicrobin:nicrobin /home/nicrobin -R
+mkdir -p  /hontel/sample
+chown nicrobin:nicrobin /hontel/ -R
+
 cd /home/nicrobin
 sudo -u nicrobin hontel.py
 
