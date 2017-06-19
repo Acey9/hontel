@@ -55,8 +55,7 @@ mkdir -p /home/nicrobin/log/hontel/
 chown nicrobin:nicrobin /home/nicrobin -R
 mkdir -p  /hontel/sample
 chown nicrobin:nicrobin /hontel/ -R
+exit 
 
-cd /home/nicrobin
-sudo -u nicrobin hontel.py
+chroot /srv/chroot/$CODENAME  sudo -u nicrobin hontel.py
 
-exit
