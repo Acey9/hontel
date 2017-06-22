@@ -2,7 +2,7 @@
 
 BKDIR="/hontel/sample/hontel"
 mkdir -p $BKDIR
-for var in "$*"
+for var in $*
 do
         fn=$var
         if [ -e "$fn" ];then
