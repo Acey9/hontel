@@ -48,6 +48,9 @@ wget https://raw.githubusercontent.com/Acey9/hontel/master/proc/meminfo -O /proc
 wget https://raw.githubusercontent.com/Acey9/hontel/master/proc/modules -O /proc/modules
 wget https://raw.githubusercontent.com/Acey9/hontel/master/proc/mounts -O /proc/mounts
 
+wget https://raw.githubusercontent.com/Acey9/hontel/master/hook/rm.hook -O /bin/rm.hook
+chmod +x /bin/rm.hook
+
 useradd nicrobin -m
 hname=`cat /etc/hostname`
 echo "127.0.0.1    $hname" >> /etc/hosts

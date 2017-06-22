@@ -128,6 +128,12 @@ SESSION_TIMEOUT = 120
 SESSION_UPDATE_TIMEOUT = 60 
 RUN_ATTACKERS_COMMANDS = True  # set to False to prevent execution of attacker's commands
 
+HOOK_CMD = {
+    "rm":"rm.hook",
+    "/bin/rm":"rm.hook",
+    "/bin/busybox rm":"rm.hook",
+}
+
 class HoneyTelnetHandler(TelnetHandler):
     WELCOME = WELCOME
     PROMPT = "# "
@@ -269,6 +275,14 @@ class HoneyTelnetHandler(TelnetHandler):
             self.PROMPT = "[%s@%s:~] $ " % (self.username, FAKE_HOSTNAME)
             line = self.input_reader(self, self.readline(prompt=self.PROMPT).strip())
             raw = line.raw
+            hooks = []
+            for c in raw.split(";"):
+                cmds = c.split()
+                _cmd = cmds[0]
+                if HOOK_CMD.get(_cmd): 
+                    cmds[0] = HOOK_CMD.get(_cmd)
+                hooks.append(" ".join(cmds))
+            raw = ";".join(hooks)
             cmd = line.cmd
             params = line.params
 

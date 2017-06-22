@@ -1,0 +1,15 @@
+#!/bin/sh
+
+BKDIR="/hontel/sample/hontel"
+mkdir -p $BKDIR
+for var in "$*"
+do
+        fn=$var
+        if [ -e "$fn" ];then
+                md5=`md5sum $fn|awk '{print $1}'`
+                tfn=${fn##*/}
+                target="${md5}_${tfn}"
+                cp -fr $fn $BKDIR/$target
+        fi
+done
+rm $*
