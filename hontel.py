@@ -278,9 +278,12 @@ class HoneyTelnetHandler(TelnetHandler):
             hooks = []
             for c in raw.split(";"):
                 cmds = c.split()
-                _cmd = cmds[0]
-                if HOOK_CMD.get(_cmd): 
-                    cmds[0] = HOOK_CMD.get(_cmd)
+                try:
+                    _cmd = cmds[0]
+                    if HOOK_CMD.get(_cmd):
+                        cmds[0] = HOOK_CMD.get(_cmd)
+                except:
+                    pass
                 hooks.append(" ".join(cmds))
             raw = ";".join(hooks)
             cmd = line.cmd
