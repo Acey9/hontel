@@ -132,6 +132,9 @@ HOOK_CMD = {
     "rm":"rm.hook",
     "/bin/rm":"rm.hook",
     "/bin/busybox rm":"rm.hook",
+    "/bin/busybox chmod":"chmod.hook",
+    "/bin/chmod":"chmod.hook",
+    "chmod":"chmod.hook",
 }
 
 class HoneyTelnetHandler(TelnetHandler):
