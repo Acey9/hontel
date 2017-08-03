@@ -131,8 +131,6 @@ RUN_ATTACKERS_COMMANDS = True  # set to False to prevent execution of attacker's
 HOOK_CMD = {
     "rm":"rm.hook",
     "/bin/rm":"rm.hook",
-    "/bin/busybox rm":"rm.hook",
-    "/bin/busybox chmod":"chmod.hook",
     "/bin/chmod":"chmod.hook",
     "chmod":"chmod.hook",
 }
@@ -282,9 +280,15 @@ class HoneyTelnetHandler(TelnetHandler):
             for c in raw.split(";"):
                 cmds = c.split()
                 try:
-                    _cmd = cmds[0]
-                    if HOOK_CMD.get(_cmd):
-                        cmds[0] = HOOK_CMD.get(_cmd)
+                    if 'busybox' in cmds[0]:
+                       _cmd = cmds[1]
+                       if HOOK_CMD.get(_cmd):
+                           cmds[1] = HOOK_CMD.get(_cmd)
+                           cmds[0] = ""
+                    else:
+                       _cmd = cmds[0]
+                       if HOOK_CMD.get(_cmd):
+                           cmds[0] = HOOK_CMD.get(_cmd)
                 except:
                     pass
                 hooks.append(" ".join(cmds))
